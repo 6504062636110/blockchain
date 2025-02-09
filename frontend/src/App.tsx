@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -12,14 +12,24 @@ import "./App.css";
 
 function App() {
   const [message, setMessage] = useState('');
+  const [msg,setMsg] = useState("");
+
+
+  const getMsg = async () => {
+    await fetch("http://localhost:3000/status", {
+      method: "GET"
+    }).then(e => e.json()).then((a) => {
+      setMsg(a.data.message)
+    }) 
+  }
 
   const submitHander = async () => {
 
     let body = {
-      message
+      newMessage: message
     }
 
-    let data = await fetch("http://localhost:3000/messages", {
+    let data = await fetch("http://localhost:3000/update", {
       method: "POST",
       headers : {
         "Content-Type": "application/json",
@@ -27,8 +37,15 @@ function App() {
       body: JSON.stringify(body)
     });
 
+    setMessage("")
+    getMsg();
+
     console.log( await data.json() );
   }
+
+  useEffect(() => {
+    getMsg()
+  },[])
 
     
 
@@ -40,7 +57,7 @@ function App() {
     </div>
       <Card>
         <CardHeader>
-          <CardTitle className="text-black-100">Add message</CardTitle>
+          <CardTitle className="text-black-100">{msg}</CardTitle>
         </CardHeader>
         
         <CardContent className="flex flex-col gap-4">
