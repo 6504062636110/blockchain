@@ -40,7 +40,7 @@ function App() {
     </div>
       <Card>
         <CardHeader>
-          <CardTitle>Add message</CardTitle>
+          <CardTitle className="text-black-100">Add message</CardTitle>
         </CardHeader>
         
         <CardContent className="flex flex-col gap-4">
