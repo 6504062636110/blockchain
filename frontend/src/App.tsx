@@ -30,8 +30,14 @@ function App() {
     console.log( await data.json() );
   }
 
+    
+
   return (
     <>
+    
+    <div style={{backgroundColor: 'pink', textAlign: 'center', fontSize: '30px', padding: '10px',}}>
+      GROUP E
+    </div>
       <Card>
         <CardHeader>
           <CardTitle>Add message</CardTitle>
@@ -47,6 +53,7 @@ function App() {
                   onClick={() => submitHander()}>Submit</Button>
         </CardContent>
       </Card>
+      
     </>
   );
 }

@@ -13,9 +13,15 @@ app.listen(PORT, () => {
 
 app.get("/status", (req, res) => {
 
+    let sum = 100;
+    sum = 100 + 500 +1000;
+
     res.status(200).send({
         status: true,
         message: 'hello world!',
+        data: {
+            sum
+        }
     })
 });
 
