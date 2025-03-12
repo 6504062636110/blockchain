@@ -4,6 +4,9 @@
 
 /* ... */
 
+body > div#root {
+  width: 100%;
+}
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -30,6 +33,10 @@ a:hover {
 }
 
 body {
+  
+    background-color: #F5DAD2; 
+  
+  
   margin: 0;
   display: flex;
   place-items: center;
@@ -138,3 +145,4 @@ button:focus-visible {
     @apply bg-background text-foreground;
   }
 }
+

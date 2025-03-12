@@ -18,7 +18,7 @@ const RecyclePage = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-green-100 p-4 pt-20">
+    <div className="flex justify-center items-center min-h-screen p-4 pt-20">
       <div className="bg-orange-300 p-6 rounded-2xl shadow-lg w-[400px]">
         <h2 className="text-center text-2xl font-bold text-white">Recycle Credit</h2>
 

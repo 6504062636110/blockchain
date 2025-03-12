@@ -10,8 +10,9 @@ function App() {
   return (
     <Router>
       <Navbar />
-      <div className="p-6">
+      <div className="p-6 w-full flex flex-col justify-center">
         <Routes>
+          <Route path="/" element={<Marketplace />} />
           <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
