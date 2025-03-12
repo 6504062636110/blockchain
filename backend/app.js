@@ -25,7 +25,7 @@ app.get("/status", async(req, res) => {
     const message = await contract.message();
     res.status(200).send({
         status: true,
-        message: 'hello world!',
+        message: 'I LOVE CAT',
         data: {
             message
         }
