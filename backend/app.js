@@ -30,6 +30,7 @@ app.get("/status", async (req, res) => {
         },
     });
 });
+
 app.post("/update", async (req, res) => {
     try {
         const { newMessage } = req.body;
