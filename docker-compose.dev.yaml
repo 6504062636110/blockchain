@@ -1,0 +1,31 @@
+services:
+    mariadb:
+        image: mariadb:10
+        hostname: "mariadb-dev"
+        container_name: mariadb-dev
+        ports:
+            - "3306:3306"
+        volumes:
+            - ./volume/mariadb:/var/lib/mysql
+            - ${PWD}/maria.cnf:/etc/mysql/conf.d/maria.cnf
+        environment:
+            - TZ=Asia/Bangkok
+            - "MYSQL_ROOT_HOST=%"
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+            - MYSQL_DATABASE=${MYSQL_DATABASE}
+            - MYSQL_USER=${MYSQL_USER}
+            - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: phpmyadmin-dev
+        hostname: "phpmyadmin-dev"
+        platform: linux/amd64
+        ports:
+            - "8002:80"
+        restart: always
+        environment:
+            - PMA_HOST=mariadb
+            - UPLOAD_LIMIT=100M
+            # PMA_ABSOLUTE_URI: "http://localhost/phpmyadmin"
+        depends_on:
+            - mariadb
