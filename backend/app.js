@@ -1,5 +1,15 @@
 const express = require("express");
+var mysql      = require('mysql');
 require("dotenv").config();
+
+var connection = mysql.createConnection({
+    host     : 'localhost',
+    user     : 'recycle-db',
+    password : 'supersecret',
+    database : 'recycle-db'
+});
+
+connection.connect();
 
 const app = express();
 const cors = require("cors");
@@ -41,6 +51,11 @@ app.post("/update", async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+app.post('/register',async (req,res) =>{
+    console.log(req.body)
+    res.send('Hello');
+})
 
 // app.post("/messages", (req, res) => {
 

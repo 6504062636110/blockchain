@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mariadb
--- Generation Time: Mar 22, 2025 at 02:56 PM
+-- Generation Time: Mar 22, 2025 at 03:42 PM
 -- Server version: 10.11.11-MariaDB-ubu2204
 -- PHP Version: 8.2.27
 
@@ -43,6 +43,7 @@ CREATE TABLE `customer` (
   `Name` varchar(255) NOT NULL,
   `Surname` varchar(255) NOT NULL,
   `PhoneNumber` varchar(255) NOT NULL,
+  `Username` varchar(255) NOT NULL,
   `Password` int(11) NOT NULL,
   `WalletAddress` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -99,7 +100,8 @@ ALTER TABLE `category`
 -- Indexes for table `customer`
 --
 ALTER TABLE `customer`
-  ADD PRIMARY KEY (`Cus_ID`);
+  ADD PRIMARY KEY (`Cus_ID`),
+  ADD UNIQUE KEY `Username` (`Username`);
 
 --
 -- Indexes for table `orderdetail`
