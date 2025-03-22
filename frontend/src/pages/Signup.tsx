@@ -1,71 +1,66 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
-function Signup() {
+const SignUp = () => {
   const [form, setForm] = useState({ name: "", birthday: "", phone: "" });
-  const [error, setError] = useState(""); 
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-    setError(""); 
   };
 
   const handleConfirm = () => {
     if (!form.name || !form.birthday || !form.phone) {
-      setError("Please fill out the information completely.!");
+      setError("All fields are required!");
     } else {
-      setError(""); 
+      setError("");
+      // ✅ บันทึกข้อมูลลง Local Storage
+      const userData = { ...form, totalCredit: 0 };
+      localStorage.setItem("user", JSON.stringify(userData));
       navigate("/login");
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
+    <div className="flex justify-center items-center min-h-screen p-6">
       <div className="bg-white p-6 rounded-xl shadow-lg text-center w-96">
         <h1 className="text-3xl font-bold text-gray-800">SIGN UP</h1>
 
-        {/* Name Input */}
         <input
-          type="text"
-          name="name"
-          placeholder="NAME SURNAME"
           className="w-full p-3 mt-4 border rounded-md text-lg"
+          name="name"
+          placeholder="Full Name"
           value={form.name}
           onChange={handleChange}
         />
-
-        {/* Birthday Input */}
+        
         <input
-          type="date"
-          name="birthday"
           className="w-full p-3 mt-4 border rounded-md text-lg"
+          name="birthday"
+          type="date"
           value={form.birthday}
           onChange={handleChange}
         />
-
-        {/* Phone Number Input */}
+        
         <input
-          type="text"
-          name="phone"
-          placeholder="PHONE NUMBER"
           className="w-full p-3 mt-4 border rounded-md text-lg"
+          name="phone"
+          placeholder="Phone Number"
           value={form.phone}
           onChange={handleChange}
         />
 
         {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
 
-        {/* Confirm Button */}
-        <button
-          className="w-full bg-orange-400 text-white py-3 mt-6 text-xl font-semibold rounded-md hover:bg-orange-500 transition"
-          onClick={handleConfirm}
-        >
+        <Button className="w-full bg-orange-400 text-white py-3 mt-6 text-xl font-semibold rounded-md hover:bg-orange-500 transition"
+          onClick={handleConfirm}>
           CONFIRM
-        </button>
+        </Button>
       </div>
     </div>
   );
-}
+};
 
-export default Signup;
+export default SignUp;

@@ -4,6 +4,8 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import RecyclePage from "./pages/RecyclePage";
 import Navbar from "./components/ui/Navbar";
+import TransactionCompleted from "./pages/TransactionCompleted";
+import Profile from "./pages/Profile";
 
 
 function App() {
@@ -16,7 +18,9 @@ function App() {
           <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/recycle" element={<RecyclePage />} /> {/* ✅ เพิ่ม Route ของ Recycle */}
+          <Route path="/recycle" element={<RecyclePage />} />
+          <Route path="/profile" element={<Profile />} /> 
+          <Route path="/transaction-completed" element={<TransactionCompleted />} />
         </Routes>
       </div>
     </Router>
