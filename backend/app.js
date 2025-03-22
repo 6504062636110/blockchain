@@ -1,12 +1,13 @@
 const express = require("express");
-var mysql      = require('mysql');
+const session = require('express-session')
+const mysql = require("mysql");
 require("dotenv").config();
 
 var connection = mysql.createConnection({
-    host     : 'localhost',
-    user     : 'recycle-db',
-    password : 'supersecret',
-    database : 'recycle-db'
+    host: "localhost",
+    user: "recycle-db",
+    password: "supersecret",
+    database: "recycle-db",
 });
 
 connection.connect();
@@ -25,6 +26,12 @@ const contract = new ethers.Contract(contractAddress, contractABI.abi, wallet);
 
 app.use(cors());
 app.use(express.json());
+app.use(session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }
+}))
 
 app.listen(PORT, () => {
     console.log("Server Listening on PORT:", PORT);
@@ -52,10 +59,44 @@ app.post("/update", async (req, res) => {
     }
 });
 
-app.post('/register',async (req,res) =>{
-    console.log(req.body)
-    res.send('Hello');
+app.get('/profile', async (req, res) => {
+    if (req.session.user) {
+        res.json(req.session.user);
+    } else {
+        res.status(401).json({ error: "User not logged in" });
+    }
 })
+
+app.post("/register", async (req, res) => {
+    connection.query(`
+    INSERT INTO \`customer\`(
+        \`Name\`,
+        \`Surname\`,
+        \`PhoneNumber\`,
+        \`Username\`,
+        \`Password\`,
+        \`WalletAddress\`
+    )
+    VALUES(
+        ?,
+        ?,
+        ?,
+        ?,
+        ?,
+        ?
+    )    
+    `, [
+        req.body.Name,
+        req.body.Surname,
+        req.body.PhoneNumber,
+        req.body.Username,
+        req.body.Password,
+        ''
+    ], function (error, results, fields) {
+        req.session.user = { cusId: results.insertId }
+        res.send("สมัครบัญชีเรียบร้อยแล้ว");
+    });
+});
 
 // app.post("/messages", (req, res) => {
 
