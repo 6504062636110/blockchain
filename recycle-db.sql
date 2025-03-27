@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mariadb
--- Generation Time: Mar 22, 2025 at 03:42 PM
+-- Generation Time: Mar 27, 2025 at 09:04 PM
 -- Server version: 10.11.11-MariaDB-ubu2204
 -- PHP Version: 8.2.27
 
@@ -27,6 +27,7 @@ SET time_zone = "+00:00";
 -- Table structure for table `category`
 --
 
+DROP TABLE IF EXISTS `category`;
 CREATE TABLE `category` (
   `Category_ID` int(11) NOT NULL,
   `CategoryName` varchar(255) NOT NULL
@@ -38,6 +39,7 @@ CREATE TABLE `category` (
 -- Table structure for table `customer`
 --
 
+DROP TABLE IF EXISTS `customer`;
 CREATE TABLE `customer` (
   `Cus_ID` int(11) NOT NULL,
   `Name` varchar(255) NOT NULL,
@@ -45,7 +47,8 @@ CREATE TABLE `customer` (
   `PhoneNumber` varchar(255) NOT NULL,
   `Username` varchar(255) NOT NULL,
   `Password` int(11) NOT NULL,
-  `WalletAddress` varchar(255) NOT NULL
+  `WalletAddress` varchar(255) NOT NULL,
+  `Balance` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -54,6 +57,7 @@ CREATE TABLE `customer` (
 -- Table structure for table `orderdetail`
 --
 
+DROP TABLE IF EXISTS `orderdetail`;
 CREATE TABLE `orderdetail` (
   `Order_ID` int(11) NOT NULL,
   `Product_ID` int(11) NOT NULL,
@@ -67,6 +71,7 @@ CREATE TABLE `orderdetail` (
 -- Table structure for table `orders`
 --
 
+DROP TABLE IF EXISTS `orders`;
 CREATE TABLE `orders` (
   `Order_ID` int(11) NOT NULL,
   `Cus_ID` int(11) NOT NULL,
@@ -79,6 +84,7 @@ CREATE TABLE `orders` (
 -- Table structure for table `Product`
 --
 
+DROP TABLE IF EXISTS `Product`;
 CREATE TABLE `Product` (
   `Product_ID` int(11) NOT NULL,
   `ProductName` varchar(255) NOT NULL,
