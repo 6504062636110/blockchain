@@ -1,34 +1,37 @@
-// SPDX-License-Identifier: GPL-3.0
-
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
-import "@openzeppelin/contracts/token/ERC20/presets/ERC20PresetFixedSupply.sol";
+contract CarbonCredit {
+    address public owner;
+    mapping(address => uint256) public userCoins;
 
-contract RecycleCreditToken is ERC20PresetFixedSupply, AccessControl {
-    // contract RecycleCreditToken is ERC20PresetFixedSupply {
-    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
-    constructor(
-        address owner
-    )
-        ERC20PresetFixedSupply(
-            "Recycle Credit",
-            "GKT",
-            30000000 * 10 ** 18,
-            owner
-        )
-    {
-        _grantRole(DEFAULT_ADMIN_ROLE, owner);
-        _grantRole(MINTER_ROLE, owner);
+    event QuestCompleted(address indexed user, uint256 reward);
+
+    // Constructor to set the contract owner
+    constructor() {
+        owner = msg.sender;
     }
 
-    // Allow minters to add more tokens to the contract #แบบฝึกหัด Smart Contract
-    function mint(address to, uint256 amount) public onlyRole(MINTER_ROLE) {
-        _mint(to, amount);
+    // Modifier to check that the caller is the owner
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only admin can reward");
+        _;
     }
-    // Allow the owner to add minters #แบบฝึกหัด Smart Contract #2
-    function addMinter(address minter) public onlyRole(DEFAULT_ADMIN_ROLE) {
-        grantRole(MINTER_ROLE, minter);
+
+    // Function to complete a quest and reward a user with Ether
+function completeQuest(address user , uint num) external onlyOwner {
+    userCoins[user] += num;
+
+    // Debugging line: Log the balance of the contract before and after transfer
+    emit QuestCompleted(user, num);
+    
+}
+
+    // Function to get the balance of a user
+    function getBalance(address user) external view returns (uint256) {
+        return userCoins[user];
     }
+
+  
+
 }

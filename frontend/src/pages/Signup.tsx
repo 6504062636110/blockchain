@@ -3,7 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 const SignUp = () => {
-  const [form, setForm] = useState({ name: "", birthday: "", username: "", password: "" });
+  const backendUrl = import.meta.env.VITE_API;
+
+  const [form, setForm] = useState({
+    name: "",
+    surname: "",
+    phone: "",
+    username: "",
+    password: "",
+  });
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -11,12 +19,19 @@ const SignUp = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleConfirm = () => {
-    if (!form.name || !form.birthday || !form.username || !form.password) {
+  const handleConfirm = async () => {
+    if (!form.name || !form.surname || !form.phone || !form.username || !form.password) {
       setError("All fields are required!");
     } else {
       setError("");
       // ✅ Save user data to Local Storage
+
+      await fetch(`http://localhost:3000/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      
       const userData = { ...form, totalCredit: 0 };
       localStorage.setItem("user", JSON.stringify(userData));
       navigate("/login");
@@ -28,24 +43,33 @@ const SignUp = () => {
       <div className="bg-white p-6 rounded-xl shadow-lg text-center w-96">
         <h1 className="text-3xl font-bold text-gray-800">SIGN UP</h1>
 
-        {/* Full Name Input */}
+        {/* Name Input */}
         <input
           className="w-full p-3 mt-4 border rounded-md text-lg"
           name="name"
-          placeholder="Full Name"
+          placeholder="Name"
           value={form.name}
           onChange={handleChange}
         />
-        
-        {/* Birthday Input */}
+
+        {/* Surname Input */}
         <input
           className="w-full p-3 mt-4 border rounded-md text-lg"
-          name="birthday"
-          type="date"
-          value={form.birthday}
+          name="surname"
+          placeholder="Surname"
+          value={form.surname}
           onChange={handleChange}
         />
-        
+
+        {/* Phone Number Input */}
+        <input
+          className="w-full p-3 mt-4 border rounded-md text-lg"
+          name="phone"
+          placeholder="Phone Number"
+          value={form.phone}
+          onChange={handleChange}
+        />
+
         {/* Username Input */}
         <input
           className="w-full p-3 mt-4 border rounded-md text-lg"

@@ -4,10 +4,12 @@ import { useNavigate } from "react-router-dom";
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const backendUrl = import.meta.env.VITE_API;
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (username.trim() === "" || password.trim() === "") {
       setError("Please enter both username and password!");
     } else {
@@ -18,7 +20,23 @@ function Login() {
       // For simplicity, you can save the data to Local Storage
       localStorage.setItem("user", JSON.stringify(user));
 
+      let data = await fetch(`${backendUrl}/login`, {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ username, password }),
+      });
+
+      console.log(data.status);
+
       // Redirect user after successful login
+      if (data.status != 200) {
+        setErrorMessage("Invalid username or password");
+        return;
+      }
+
       navigate("/marketplace");
     }
   };
@@ -62,6 +80,8 @@ function Login() {
         >
           LOGIN
         </button>
+
+        {errorMessage}
 
         {/* Sign Up Link */}
         <p className="mt-4 text-gray-600">
