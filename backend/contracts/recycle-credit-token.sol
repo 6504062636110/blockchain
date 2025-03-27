@@ -19,19 +19,15 @@ contract CarbonCredit {
     }
 
     // Function to complete a quest and reward a user with Ether
-function completeQuest(address user , uint num) external onlyOwner {
-    userCoins[user] += num;
+    function completeQuest(address user, uint num) external onlyOwner {
+        userCoins[user] += num;
 
-    // Debugging line: Log the balance of the contract before and after transfer
-    emit QuestCompleted(user, num);
-    
-}
+        // Debugging line: Log the balance of the contract before and after transfer
+        emit QuestCompleted(user, num);
+    }
 
     // Function to get the balance of a user
     function getBalance(address user) external view returns (uint256) {
         return userCoins[user];
     }
-
-  
-
 }

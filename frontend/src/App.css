@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
 
 body {
-  background: linear-gradient(to right, #88D66C, #C9DABF);
+  background: linear-gradient(to right, #88d66c, #c9dabf);
   margin: 0;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -92,14 +92,14 @@ body {
 
 /* Navbar Styles */
 .navbar {
-  position: fixed;  /* ✅ ทำให้ติดด้านบน */
+  position: fixed; /* ✅ ทำให้ติดด้านบน */
   top: 0;
   left: 0;
-  width: 100%;  /* ✅ ขยายเต็มความกว้าง */
+  width: 100%; /* ✅ ขยายเต็มความกว้าง */
   background-color: #2c3e50;
   display: flex;
   justify-content: space-between;
-  align-items: center;  /* ✅ จัดให้ข้อความอยู่กึ่งกลาง */
+  align-items: center; /* ✅ จัดให้ข้อความอยู่กึ่งกลาง */
   padding: 15px 30px;
   color: white;
   z-index: 1000; /* ✅ ป้องกัน Navbar ถูกซ้อนทับ */

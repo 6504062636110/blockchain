@@ -22,7 +22,7 @@ function Login() {
 
       let data = await fetch(`${backendUrl}/login`, {
         method: "POST",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
         },
         credentials: "include",

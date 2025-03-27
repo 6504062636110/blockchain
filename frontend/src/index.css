@@ -33,10 +33,8 @@ a:hover {
 }
 
 body {
-  
-    background-color: #F5DAD2; 
-  
-  
+  background-color: #f5dad2;
+
   margin: 0;
   display: flex;
   place-items: center;
@@ -145,4 +143,3 @@ button:focus-visible {
     @apply bg-background text-foreground;
   }
 }
-

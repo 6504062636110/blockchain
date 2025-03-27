@@ -20,7 +20,13 @@ const SignUp = () => {
   };
 
   const handleConfirm = async () => {
-    if (!form.name || !form.surname || !form.phone || !form.username || !form.password) {
+    if (
+      !form.name ||
+      !form.surname ||
+      !form.phone ||
+      !form.username ||
+      !form.password
+    ) {
       setError("All fields are required!");
     } else {
       setError("");
@@ -31,7 +37,7 @@ const SignUp = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
-      
+
       const userData = { ...form, totalCredit: 0 };
       localStorage.setItem("user", JSON.stringify(userData));
       navigate("/login");
@@ -92,8 +98,10 @@ const SignUp = () => {
         {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
 
         {/* Confirm Button */}
-        <Button className="w-full bg-orange-400 text-white py-3 mt-6 text-xl font-semibold rounded-md hover:bg-orange-500 transition"
-          onClick={handleConfirm}>
+        <Button
+          className="w-full bg-orange-400 text-white py-3 mt-6 text-xl font-semibold rounded-md hover:bg-orange-500 transition"
+          onClick={handleConfirm}
+        >
           CONFIRM
         </Button>
       </div>
