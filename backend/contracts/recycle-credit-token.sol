@@ -30,4 +30,10 @@ contract CarbonCredit {
     function getBalance(address user) external view returns (uint256) {
         return userCoins[user];
     }
+
+    function burn(address user, uint256 amount) external {
+        require(msg.sender == owner, "Only admin can burn tokens");
+        require(userCoins[user] >= amount, "Insufficient balance");
+        userCoins[user] -= amount;
+    }
 }
