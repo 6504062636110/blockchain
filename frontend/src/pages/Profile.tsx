@@ -1,7 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMyBalance, useProfile } from "@/lib/hook";
 
 export default function Profile() {
   const { data: profile } = useProfile();
+  const { data: balance } = useMyBalance();
 
   return (
     <div className="min-h-screen flex items-center justify-center ">
@@ -14,32 +15,11 @@ export default function Profile() {
         {/* <p className="truncate">{profile?.walletAddress || "Not provided"}</p> */}
 
         <h2 className="text-lg font-bold mt-2">Total Carbon Credits</h2>
-        <p className="text-2xl font-bold">{0}</p>
+        <p className="text-2xl font-bold">{balance}</p>
         {/* TODO: Add carbon credit count */}
       </div>
     </div>
   );
 }
 
-export const useProfile = () => {
-  return useQuery({
-    queryKey: ["profile"],
-    queryFn: async () => {
-      const backendUrl = import.meta.env.VITE_API;
-      console.log("backendUrl", backendUrl);
-      const fetchData = await fetch(`${backendUrl}/profile`, {
-        method: "GET",
-        credentials: "include",
-      });
-      const json = (await fetchData.json()) as {
-        cusId: number;
-        username: string;
-        name: string;
-        surname: string;
-        phoneNumber: string;
-        walletAddress: string;
-      };
-      return json;
-    },
-  });
-};
+

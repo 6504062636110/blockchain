@@ -152,13 +152,18 @@ app.post("/logout", (req, res) => {
     res.status(200).json({ message: "Logout Successful" });
 });
 
-app.post("/getbalance", async (req, res) => {
-    const { UserAdrress, coin } = req.query;
+app.get("/getbalance", async (req, res) => {
+    const user = req.session.user;
+    if (!user) {
+        return res.status(401).json({ error: "User not logged in" });
+    }
+    const walletAddress = user.walletAddress;
+    if (!walletAddress) {
+        return res.status(400).json({ error: "User has no wallet address" });
+    }
 
-    try {
-        const balance = await contract.getBalance(UserAdrress, coin);
-    } catch (error) { }
-    res.json({ balance });
+    const balance = await contract.getBalance(walletAddress);
+    res.json({ balance: Number(balance) });
 });
 
 app.get('/product', async (req, res) => {
@@ -174,6 +179,30 @@ app.get('/product', async (req, res) => {
             res.status(200).json({ products: results });
         },
     );
+})
+
+app.post('/recycle', async (req, res) => {
+    const user = req.session.user;
+    if (!user) {
+        return res.status(401).json({ error: "User not logged in" });
+    }
+    const walletAddress = user.walletAddress;
+    if (!walletAddress) {
+        return res.status(400).json({ error: "User has no wallet address" });
+    }
+
+    const { amount } = req.body;
+    if (!amount || isNaN(amount)) {
+        return res.status(400).json({ error: "Amount is required" });
+    }
+
+    try {
+        const tx = await contract.completeQuest(walletAddress, parseInt(amount));
+        await tx.wait();
+        return res.json({ txHash: tx.hash });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
 })
 
 // app.post("/messages", (req, res) => {

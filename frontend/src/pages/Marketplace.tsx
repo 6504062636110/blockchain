@@ -6,26 +6,26 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../components/ui/dialog";
-import { useProducts } from "@/lib/hook";
+import { Product, useProducts } from "@/lib/hook";
 
 export default function Marketplace() {
   const { data: prods } = useProducts();
 
-  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product>();
   const [quantity, setQuantity] = useState<number>(1);
   const [carbonCredit, setCarbonCredit] = useState<number>(1);
 
-  const handleSelectProduct = (product: any) => {
+  const handleSelectProduct = (product: Product) => {
     setSelectedProduct(product);
     setQuantity(1); // Reset quantity
   };
 
   const discount = Math.min(
     Math.floor(carbonCredit / 100),
-    selectedProduct ? selectedProduct.price * 0.2 : 0,
+    selectedProduct ? selectedProduct.CreditPerUnit * 0.2 : 0,
   );
   const totalPrice = selectedProduct
-    ? selectedProduct.price * quantity - discount
+    ? selectedProduct.CreditPerUnit * quantity - discount
     : 0;
 
   return (
@@ -52,7 +52,7 @@ export default function Marketplace() {
                 <div className="mt-2 border-b pb-2">
                   <p>
                     <span className="font-bold">Product name:</span>{" "}
-                    {selectedProduct.name}
+                    {selectedProduct.ProductName}
                   </p>
                   <p>
                     <span className="font-bold">Quantity (Piece):</span>{" "}
@@ -60,7 +60,7 @@ export default function Marketplace() {
                   </p>
                   <p>
                     <span className="font-bold">Price (THB):</span>{" "}
-                    {selectedProduct.price}
+                    {selectedProduct.CreditPerUnit}
                   </p>
                 </div>
 

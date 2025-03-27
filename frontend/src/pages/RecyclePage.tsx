@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
+import { useRecycle } from "@/lib/hook";
 
 const plasticTypes = ["PET", "PE", "PP", "PC", "PVC"];
 const carbonCreditRate: { [key: string]: number } = {
@@ -13,6 +14,8 @@ const carbonCreditRate: { [key: string]: number } = {
 };
 
 const RecyclePage = () => {
+  const { mutate } = useRecycle();
+
   const [amount, setAmount] = useState<number>(0);
   const [selectedType, setSelectedType] = useState<string>("");
   const [list, setList] = useState<{ type: string; amount: number }[]>([]);
@@ -65,11 +68,10 @@ const RecyclePage = () => {
             {plasticTypes.map((type) => (
               <button
                 key={type}
-                className={`px-3 py-1 border rounded-md ${
-                  selectedType === type
-                    ? "bg-cyan-400 text-white"
-                    : "bg-gray-200"
-                }`}
+                className={`px-3 py-1 border rounded-md ${selectedType === type
+                  ? "bg-cyan-400 text-white"
+                  : "bg-gray-200"
+                  }`}
                 onClick={() => setSelectedType(type)}
               >
                 {type}
@@ -177,8 +179,10 @@ const RecyclePage = () => {
             <Button
               className="bg-green-600 text-white px-4 py-2 rounded-md"
               onClick={() => {
-                setIsOpen(false);
-                navigate("/transaction-completed");
+                // TODO: Add proper api call here
+                mutate({ amount: totalCarbonCredit });
+                // setIsOpen(false);
+                // navigate("/transaction-completed");
               }}
             >
               Confirm

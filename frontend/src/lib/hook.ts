@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 
 const backendUrl = import.meta.env.VITE_API;
 
-type Product = {
+export type Product = {
   Product_ID: number;
   ProductName: string;
   CreditPerUnit: number;
@@ -31,6 +31,58 @@ export const useLogin = () => {
         body: JSON.stringify(data),
       });
       return response.json();
+    },
+  });
+};
+
+export const useRecycle = () => {
+  return useMutation({
+    mutationFn: async (data: { amount: number }) => {
+      const response = await fetch(`${backendUrl}/recycle`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(data),
+      });
+      return response.json();
+    },
+  });
+};
+
+export const useProfile = () => {
+  return useQuery({
+    queryKey: ["profile"],
+    queryFn: async () => {
+      const backendUrl = import.meta.env.VITE_API;
+      console.log("backendUrl", backendUrl);
+      const fetchData = await fetch(`${backendUrl}/profile`, {
+        method: "GET",
+        credentials: "include",
+      });
+      const json = (await fetchData.json()) as {
+        cusId: number;
+        username: string;
+        name: string;
+        surname: string;
+        phoneNumber: string;
+        walletAddress: string;
+      };
+      return json;
+    },
+  });
+};
+
+export const useMyBalance = () => {
+  return useQuery({
+    queryKey: ["balance"],
+    queryFn: async () => {
+      const response = await fetch(`${backendUrl}/getbalance`, {
+        method: "GET",
+        credentials: "include",
+      });
+      return (await response.json())["balance"] as number;
     },
   });
 };
