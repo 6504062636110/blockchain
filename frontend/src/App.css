@@ -1,131 +1,131 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
 
 body {
-  background: linear-gradient(to right, #88d66c, #c9dabf);
-  margin: 0;
-  font-family: "Poppins", sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+    background: linear-gradient(to right, #88d66c, #c9dabf);
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
 .card {
-  padding: 3rem;
-  background: white;
-  border-radius: 15px;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-  max-width: 400px;
-  text-align: center;
+    padding: 3rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    text-align: center;
 }
 
 .title {
-  font-size: 2rem;
-  font-weight: bold;
+    font-size: 2rem;
+    font-weight: bold;
 }
 
 .content {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
 .input {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: 2px solid #ccc;
-  font-size: 16px;
-  transition: 0.3s;
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 2px solid #ccc;
+    font-size: 16px;
+    transition: 0.3s;
 }
 
 .input:focus {
-  border-color: #ff758c;
-  outline: none;
-  box-shadow: 0 0 10px rgba(255, 117, 140, 0.5);
+    border-color: #ff758c;
+    outline: none;
+    box-shadow: 0 0 10px rgba(255, 117, 140, 0.5);
 }
 
 .error {
-  color: red;
-  font-size: 14px;
+    color: red;
+    font-size: 14px;
 }
 
 .button-group {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
 }
 
 .btn-primary {
-  padding: 12px 24px;
-  font-size: 18px;
-  font-weight: bold;
-  color: white;
-  background: linear-gradient(to right, #ff758c, #ff7eb3);
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+    padding: 12px 24px;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(to right, #ff758c, #ff7eb3);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
-  background: linear-gradient(to right, #ff5a7a, #ff6b9c);
-  transform: scale(1.05);
+    background: linear-gradient(to right, #ff5a7a, #ff6b9c);
+    transform: scale(1.05);
 }
 
 .btn-secondary {
-  padding: 12px 24px;
-  font-size: 18px;
-  font-weight: bold;
-  color: white;
-  background: linear-gradient(to right, #ffcd58, #ffb347);
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+    padding: 12px 24px;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(to right, #ffcd58, #ffb347);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .btn-secondary:hover {
-  background: linear-gradient(to right, #ffb347, #ffa726);
-  transform: scale(1.05);
+    background: linear-gradient(to right, #ffb347, #ffa726);
+    transform: scale(1.05);
 }
 
 /* Navbar Styles */
 .navbar {
-  position: fixed; /* ✅ ทำให้ติดด้านบน */
-  top: 0;
-  left: 0;
-  width: 100%; /* ✅ ขยายเต็มความกว้าง */
-  background-color: #2c3e50;
-  display: flex;
-  justify-content: space-between;
-  align-items: center; /* ✅ จัดให้ข้อความอยู่กึ่งกลาง */
-  padding: 15px 30px;
-  color: white;
-  z-index: 1000; /* ✅ ป้องกัน Navbar ถูกซ้อนทับ */
+    position: fixed; /* ✅ ทำให้ติดด้านบน */
+    top: 0;
+    left: 0;
+    width: 100%; /* ✅ ขยายเต็มความกว้าง */
+    background-color: #2c3e50;
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* ✅ จัดให้ข้อความอยู่กึ่งกลาง */
+    padding: 15px 30px;
+    color: white;
+    z-index: 1000; /* ✅ ป้องกัน Navbar ถูกซ้อนทับ */
 }
 
 .logo {
-  font-size: 24px;
-  font-weight: bold;
+    font-size: 24px;
+    font-weight: bold;
 }
 
 .nav-links {
-  display: flex;
-  gap: 20px;
+    display: flex;
+    gap: 20px;
 }
 
 .nav-links a {
-  color: white;
-  text-decoration: none;
-  font-size: 18px;
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
 }
 
 .nav-links a:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
 /* ✅ ป้องกันเนื้อหาโดน Navbar ทับ */
 .content-container {
-  padding-top: 80px; /* ปรับตามขนาดของ Navbar */
+    padding-top: 80px; /* ปรับตามขนาดของ Navbar */
 }

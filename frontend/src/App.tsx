@@ -11,27 +11,27 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const queryClient = new QueryClient();
 
 function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <Router>
-        <Navbar />
-        <div className="p-6 w-full flex flex-col justify-center">
-          <Routes>
-            <Route path="/" element={<Marketplace />} />
-            <Route path="/marketplace" element={<Marketplace />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/recycle" element={<RecyclePage />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route
-              path="/transaction-completed"
-              element={<TransactionCompleted />}
-            />
-          </Routes>
-        </div>
-      </Router>
-    </QueryClientProvider>
-  );
+    return (
+        <QueryClientProvider client={queryClient}>
+            <Router>
+                <Navbar />
+                <div className="p-6 w-full flex flex-col justify-center">
+                    <Routes>
+                        <Route path="/" element={<Marketplace />} />
+                        <Route path="/marketplace" element={<Marketplace />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/signup" element={<Signup />} />
+                        <Route path="/recycle" element={<RecyclePage />} />
+                        <Route path="/profile" element={<Profile />} />
+                        <Route
+                            path="/transaction-completed"
+                            element={<TransactionCompleted />}
+                        />
+                    </Routes>
+                </div>
+            </Router>
+        </QueryClientProvider>
+    );
 }
 
 export default App;

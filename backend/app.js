@@ -166,7 +166,7 @@ app.get("/getbalance", async (req, res) => {
     res.json({ balance: Number(balance) });
 });
 
-app.get('/product', async (req, res) => {
+app.get("/product", async (req, res) => {
     connection.query(
         "SELECT * FROM `product`",
         function (error, results, fields) {
@@ -179,9 +179,9 @@ app.get('/product', async (req, res) => {
             res.status(200).json({ products: results });
         },
     );
-})
+});
 
-app.post('/recycle', async (req, res) => {
+app.post("/recycle", async (req, res) => {
     const user = req.session.user;
     if (!user) {
         return res.status(401).json({ error: "User not logged in" });
@@ -197,13 +197,16 @@ app.post('/recycle', async (req, res) => {
     }
 
     try {
-        const tx = await contract.completeQuest(walletAddress, parseInt(amount));
+        const tx = await contract.completeQuest(
+            walletAddress,
+            parseInt(amount),
+        );
         await tx.wait();
         return res.json({ txHash: tx.hash });
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
-})
+});
 
 // app.post("/messages", (req, res) => {
 
