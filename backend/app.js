@@ -1,6 +1,6 @@
 const express = require("express");
 const session = require("express-session");
-const MySQLStore = require('express-mysql-session')(session);
+const MySQLStore = require("express-mysql-session")(session);
 const mysql = require("mysql");
 require("dotenv").config();
 
@@ -12,11 +12,11 @@ var connection = mysql.createConnection({
 });
 
 const options = {
-    host: 'localhost',
+    host: "localhost",
     port: 3306,
-    user: 'recycle-db',
-    password: 'supersecret',
-    database: 'recycle-db'
+    user: "recycle-db",
+    password: "supersecret",
+    database: "recycle-db",
 };
 
 const sessionStore = new MySQLStore(options);
@@ -120,7 +120,8 @@ app.put("/profile", async (req, res) => {
                     name: name || req.session.user.name,
                     surname: surname || req.session.user.surname,
                     phoneNumber: phoneNumber || req.session.user.phoneNumber,
-                    walletAddress: walletAddress || req.session.user.walletAddress,
+                    walletAddress:
+                        walletAddress || req.session.user.walletAddress,
                 };
                 return res.status(200).json({
                     message: "Profile updated successfully",

@@ -7,6 +7,7 @@ import Navbar from "./components/ui/Navbar";
 import TransactionCompleted from "./pages/TransactionCompleted";
 import Profile from "./pages/Profile";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "./components/ui/toaster";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ function App() {
                     </Routes>
                 </div>
             </Router>
+            <Toaster />
         </QueryClientProvider>
     );
 }

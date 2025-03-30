@@ -20,7 +20,7 @@ function Login() {
             // For simplicity, you can save the data to Local Storage
             localStorage.setItem("user", JSON.stringify(user));
 
-            let data = await fetch(`${backendUrl}/login`, {
+            const data = await fetch(`${backendUrl}/login`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

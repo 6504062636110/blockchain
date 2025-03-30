@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@headlessui/react";
-import { useNavigate } from "react-router-dom";
 import { useRecycle } from "@/lib/hook";
+import { useToast } from "@/hooks/use-toast";
 
 const plasticTypes = ["PET", "PE", "PP", "PC", "PVC"];
 const carbonCreditRate: { [key: string]: number } = {
@@ -15,12 +15,12 @@ const carbonCreditRate: { [key: string]: number } = {
 
 const RecyclePage = () => {
     const { mutate } = useRecycle();
+    const { toast } = useToast();
 
     const [amount, setAmount] = useState<number>(0);
     const [selectedType, setSelectedType] = useState<string>("");
     const [list, setList] = useState<{ type: string; amount: number }[]>([]);
     const [isOpen, setIsOpen] = useState(false); // ✅ State สำหรับเปิด/ปิด Modal
-    const navigate = useNavigate();
 
     const handleAdd = () => {
         if (amount > 0 && selectedType) {
@@ -197,9 +197,23 @@ const RecyclePage = () => {
                             className="bg-green-600 text-white px-4 py-2 rounded-md"
                             onClick={() => {
                                 // TODO: Add proper api call here
-                                mutate({ amount: totalCarbonCredit });
-                                // setIsOpen(false);
-                                // navigate("/transaction-completed");
+                                mutate(
+                                    { amount: totalCarbonCredit },
+                                    {
+                                        onSuccess(data) {
+                                            if ("txHash" in data) {
+                                                toast({
+                                                    title: "Transaction Completed",
+                                                    description: `Transaction Hash: ${data.txHash}`,
+                                                    variant: "default",
+                                                });
+                                                setIsOpen(false);
+                                                return;
+                                            }
+                                            console.error("data", data);
+                                        },
+                                    },
+                                );
                             }}
                         >
                             Confirm

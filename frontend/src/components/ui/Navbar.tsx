@@ -41,7 +41,7 @@ function Navbar() {
                     />
                     {userMenuOpen && (
                         <div className="absolute right-0 mt-2 w-30 bg-white text-black rounded-lg shadow-lg">
-                            {profile && !('error' in profile) && (
+                            {profile && !("error" in profile) && (
                                 <>
                                     <button
                                         onClick={() => navigate("/profile")}
@@ -61,7 +61,7 @@ function Navbar() {
                                 </>
                             )}
 
-                            {profile && ('error' in profile) && (
+                            {profile && "error" in profile && (
                                 <button
                                     onClick={() => navigate("/login")}
                                     className="block px-4 py-2 w-full"

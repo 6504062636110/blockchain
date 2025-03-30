@@ -3,8 +3,7 @@ const { ethers } = hardhat; // Destructure ethers from hardhat
 require("dotenv").config();
 
 async function main() {
-    const PRIVATE_KEY =
-    process.env.PRIVATE_KEY;
+    const PRIVATE_KEY = process.env.PRIVATE_KEY;
     const GANACHE_URL = process.env.API_URL;
     console.log("PRIVATE_KEY:", PRIVATE_KEY);
     console.log("GANACHE_URL:", GANACHE_URL); // Ensure GANACHE_URL is set in .env
