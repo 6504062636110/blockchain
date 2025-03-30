@@ -6,16 +6,17 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "../components/ui/dialog";
-import { Product, useProducts } from "@/lib/hook";
+import { Product, useMyBalance, useProducts } from "@/lib/hook";
 import { PlusCircle, MinusCircle, ShoppingCart } from "lucide-react";
 
 export default function Marketplace() {
     const { data: prods } = useProducts();
+    const { data: balance } = useMyBalance();
 
     const [selectedProduct, setSelectedProduct] = useState<Product>();
     const [quantity, setQuantity] = useState<number>(1);
-    const [availableCarbonCredits, setAvailableCarbonCredits] = useState<number>(1000); // Example starting credits
-    const [cart, setCart] = useState<Array<{product: Product, quantity: number}>>([]);
+    const [availableCarbonCredits, setAvailableCarbonCredits] = useState<number>(balance || 0);
+    const [cart, setCart] = useState<Array<{ product: Product, quantity: number }>>([]);
     const [showCart, setShowCart] = useState<boolean>(false);
 
     const handleSelectProduct = (product: Product) => {
@@ -25,12 +26,12 @@ export default function Marketplace() {
 
     const addToCart = () => {
         if (!selectedProduct) return;
-        
+
         // Check if product already exists in cart
         const existingProductIndex = cart.findIndex(
             item => item.product.Product_ID === selectedProduct.Product_ID
         );
-        
+
         if (existingProductIndex >= 0) {
             // Update quantity if product already in cart
             const updatedCart = [...cart];
@@ -44,7 +45,7 @@ export default function Marketplace() {
 
     const updateCartItemQuantity = (index: number, newQuantity: number) => {
         if (newQuantity < 1) return;
-        
+
         const updatedCart = [...cart];
         updatedCart[index].quantity = newQuantity;
         setCart(updatedCart);
@@ -70,10 +71,27 @@ export default function Marketplace() {
 
     const checkout = () => {
         if (cartTotalCredits <= availableCarbonCredits) {
-            setAvailableCarbonCredits(availableCarbonCredits - cartTotalCredits);
+            // Create order payload for API
+            const orderPayload = {
+                totalCredits: cartTotalCredits,
+                customerBalance: availableCarbonCredits,
+                items: cart.map(item => ({
+                    productId: item.product.Product_ID,
+                    productName: item.product.ProductName,
+                    quantity: item.quantity,
+                    creditCost: item.product.CreditPerUnit,
+                    subtotal: item.product.CreditPerUnit * item.quantity
+                })),
+                timestamp: new Date().toISOString()
+            };
+
+            // Log order payload for API
+            console.log('Order payload for API submission:', orderPayload);
+
+            // Reset cart and close modal
             setCart([]);
             setShowCart(false);
-            alert("Purchase successful! You spent " + cartTotalCredits + " carbon credits.");
+            alert("Order submitted successfully!");
         } else {
             alert("Not enough carbon credits. You need " + cartTotalCredits + " credits but have " + availableCarbonCredits + ".");
         }
@@ -82,14 +100,14 @@ export default function Marketplace() {
     return (
         <div className="min-h-screen p-10 flex flex-col justify-center items-center">
             {/* Credits Display and Cart Button */}
-            <div className="fixed top-5 right-5 flex gap-4">
+            <div className="fixed bottom-5 right-5 flex gap-4">
                 <div className="bg-green-100 p-2 rounded-lg flex items-center">
                     <span className="font-bold text-green-800">
                         Available Credits: {availableCarbonCredits}
                     </span>
                 </div>
-                <Button 
-                    onClick={() => setShowCart(true)} 
+                <Button
+                    onClick={() => setShowCart(true)}
                     className="bg-blue-600 hover:bg-blue-700 flex items-center gap-2"
                 >
                     <ShoppingCart size={18} />
@@ -136,18 +154,18 @@ export default function Marketplace() {
                                             Quantity:
                                         </span>
                                         <div className="flex items-center gap-2">
-                                            <Button 
-                                                variant="outline" 
-                                                size="sm" 
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
                                                 className="p-1 h-8 w-8"
                                                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
                                             >
                                                 <MinusCircle size={16} />
                                             </Button>
                                             <span className="w-8 text-center">{quantity}</span>
-                                            <Button 
-                                                variant="outline" 
-                                                size="sm" 
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
                                                 className="p-1 h-8 w-8"
                                                 onClick={() => setQuantity(quantity + 1)}
                                             >
@@ -202,7 +220,7 @@ export default function Marketplace() {
             <Dialog open={showCart} onOpenChange={setShowCart}>
                 <DialogContent className="p-6 max-w-2xl">
                     <DialogTitle className="text-xl font-bold">Shopping Cart</DialogTitle>
-                    
+
                     {cart.length > 0 ? (
                         <div className="mt-4">
                             {/* Cart Items */}
@@ -213,34 +231,34 @@ export default function Marketplace() {
                                             <p className="font-bold">{item.product.ProductName}</p>
                                             <p className="text-sm">Cost: {item.product.CreditPerUnit} Carbon Credits</p>
                                         </div>
-                                        
+
                                         {/* Quantity Controls */}
                                         <div className="flex items-center gap-2">
-                                            <Button 
-                                                variant="outline" 
-                                                size="sm" 
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
                                                 className="p-1 h-8 w-8"
                                                 onClick={() => updateCartItemQuantity(index, item.quantity - 1)}
                                             >
                                                 <MinusCircle size={16} />
                                             </Button>
                                             <span className="w-8 text-center">{item.quantity}</span>
-                                            <Button 
-                                                variant="outline" 
-                                                size="sm" 
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
                                                 className="p-1 h-8 w-8"
                                                 onClick={() => updateCartItemQuantity(index, item.quantity + 1)}
                                             >
                                                 <PlusCircle size={16} />
                                             </Button>
                                         </div>
-                                        
+
                                         {/* Total & Remove */}
                                         <div className="ml-4 flex flex-col items-end">
                                             <p className="font-bold">{calculateItemCreditCost(item.product, item.quantity)} Credits</p>
-                                            <Button 
-                                                variant="ghost" 
-                                                size="sm" 
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
                                                 className="text-red-500 p-0 h-6 mt-1"
                                                 onClick={() => removeFromCart(index)}
                                             >
@@ -250,7 +268,7 @@ export default function Marketplace() {
                                     </div>
                                 ))}
                             </div>
-                            
+
                             {/* Cart Total */}
                             <div className="mt-4 pt-3 border-t">
                                 <div className="flex justify-between items-center mb-2">
@@ -269,16 +287,16 @@ export default function Marketplace() {
                                     </p>
                                 )}
                             </div>
-                            
+
                             {/* Checkout Buttons */}
                             <div className="flex justify-between mt-6">
-                                <Button 
-                                    variant="outline" 
+                                <Button
+                                    variant="outline"
                                     onClick={() => setShowCart(false)}
                                 >
                                     Continue Shopping
                                 </Button>
-                                <Button 
+                                <Button
                                     className="bg-green-600 hover:bg-green-700"
                                     disabled={availableCarbonCredits < cartTotalCredits}
                                     onClick={checkout}
@@ -290,7 +308,7 @@ export default function Marketplace() {
                     ) : (
                         <div className="py-8 text-center">
                             <p className="text-gray-500 mb-4">Your cart is empty</p>
-                            <Button 
+                            <Button
                                 variant="outline"
                                 onClick={() => setShowCart(false)}
                             >

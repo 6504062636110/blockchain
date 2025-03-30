@@ -240,6 +240,18 @@ app.get("/product", async (req, res) => {
     );
 });
 
+app.post('/order', async (req, res) => {
+    const user = req.session.user;
+    if (!user) {
+        return res.status(401).json({ error: "User not logged in" });
+    }
+
+    const walletAddress = user.walletAddress;
+    if (!walletAddress) {
+        return res.status(400).json({ error: "User has no wallet address" });
+    }
+})
+
 app.post("/recycle", async (req, res) => {
     const user = req.session.user;
     if (!user) {
