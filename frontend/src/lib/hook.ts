@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const backendUrl = import.meta.env.VITE_API;
 
@@ -20,6 +20,7 @@ export const useProducts = () => {
 };
 
 export const useLogin = () => {
+    const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async (data: { username: string; password: string }) => {
             const response = await fetch(`${backendUrl}/login`, {
@@ -31,6 +32,25 @@ export const useLogin = () => {
                 body: JSON.stringify(data),
             });
             return response.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["profile"] });
+        },
+    });
+};
+
+export const useLogout = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async () => {
+            const response = await fetch(`${backendUrl}/logout`, {
+                method: "POST",
+                credentials: "include",
+            });
+            return response.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["profile"] });
         },
     });
 };
@@ -61,15 +81,46 @@ export const useProfile = () => {
                 method: "GET",
                 credentials: "include",
             });
-            const json = (await fetchData.json()) as {
-                cusId: number;
-                username: string;
+            const json = (await fetchData.json()) as
+                | {
+                      cusId: number;
+                      username: string;
+                      name: string;
+                      surname: string;
+                      phoneNumber: string;
+                      walletAddress: string;
+                  }
+                | {
+                      error: string;
+                  };
+            return json;
+        },
+    });
+};
+
+export const useUpdateProfile = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (
+            data: Partial<{
                 name: string;
                 surname: string;
                 phoneNumber: string;
                 walletAddress: string;
-            };
-            return json;
+            }>,
+        ) => {
+            const response = await fetch(`${backendUrl}/profile`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                credentials: "include",
+                body: JSON.stringify(data),
+            });
+            return response.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["profile"] });
         },
     });
 };

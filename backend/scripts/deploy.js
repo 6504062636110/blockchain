@@ -1,12 +1,11 @@
-import dotenv from "dotenv";
 import hardhat from "hardhat"; // Import hardhat
 const { ethers } = hardhat; // Destructure ethers from hardhat
+require("dotenv").config();
 
 async function main() {
-    console.log("Deploying contract...");
     const PRIVATE_KEY =
-        "0x339541b80273b805630ebe80bb5fe8e78c8acdf5e26e22d851f732ab5a2a973f";
-    const GANACHE_URL = "http://127.0.0.1:7545";
+    process.env.PRIVATE_KEY;
+    const GANACHE_URL = process.env.API_URL;
     console.log("PRIVATE_KEY:", PRIVATE_KEY);
     console.log("GANACHE_URL:", GANACHE_URL); // Ensure GANACHE_URL is set in .env
 
@@ -32,7 +31,7 @@ async function main() {
     const carbonCredit = await CarbonCredit.deploy();
     await carbonCredit.deployed();
 
-    console.log("✅ QuestReward contract deployed at:", carbonCredit);
+    console.log("✅ QuestReward contract deployed at:", carbonCredit.address);
 }
 
 main().catch((error) => {

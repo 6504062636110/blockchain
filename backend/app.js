@@ -1,5 +1,6 @@
 const express = require("express");
 const session = require("express-session");
+const MySQLStore = require('express-mysql-session')(session);
 const mysql = require("mysql");
 require("dotenv").config();
 
@@ -9,6 +10,16 @@ var connection = mysql.createConnection({
     password: "supersecret",
     database: "recycle-db",
 });
+
+const options = {
+    host: 'localhost',
+    port: 3306,
+    user: 'recycle-db',
+    password: 'supersecret',
+    database: 'recycle-db'
+};
+
+const sessionStore = new MySQLStore(options);
 
 connection.connect();
 
@@ -37,6 +48,7 @@ app.use(
         resave: false,
         saveUninitialized: true,
         cookie: { secure: false },
+        store: sessionStore,
     }),
 );
 
@@ -73,6 +85,52 @@ app.get("/profile", async (req, res) => {
     } else {
         res.status(401).json({ error: "User not logged in" });
     }
+});
+
+app.put("/profile", async (req, res) => {
+    const user = req.session.user;
+    if (!user) {
+        return res.status(401).json({ error: "User not logged in" });
+    }
+
+    const { name, surname, phoneNumber, walletAddress } = req.body;
+
+    connection.query(
+        `
+        UPDATE \`customer\` 
+        SET 
+            \`Name\` = COALESCE(?, \`Name\`),
+            \`Surname\` = COALESCE(?, \`Surname\`),
+            \`PhoneNumber\` = COALESCE(?, \`PhoneNumber\`),
+            \`WalletAddress\` = COALESCE(?, \`WalletAddress\`)
+        WHERE \`Cus_ID\` = ?
+        `,
+        [name, surname, phoneNumber, walletAddress, user.cusId],
+        function (error, results, fields) {
+            if (error) {
+                return res
+                    .status(500)
+                    .json({ error: "An error occurred in the Database" });
+            }
+
+            if (results.affectedRows > 0) {
+                // Update session user data
+                req.session.user = {
+                    ...req.session.user,
+                    name: name || req.session.user.name,
+                    surname: surname || req.session.user.surname,
+                    phoneNumber: phoneNumber || req.session.user.phoneNumber,
+                    walletAddress: walletAddress || req.session.user.walletAddress,
+                };
+                return res.status(200).json({
+                    message: "Profile updated successfully",
+                    user: req.session.user,
+                });
+            } else {
+                return res.status(400).json({ error: "Profile update failed" });
+            }
+        },
+    );
 });
 
 app.post("/register", async (req, res) => {

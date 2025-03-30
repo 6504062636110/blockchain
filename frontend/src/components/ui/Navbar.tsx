@@ -2,9 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom"; // ✅ ใช้ useNavigate()
 import { FaUser, FaHome } from "react-icons/fa";
 import { FaRecycle } from "react-icons/fa";
+import { useLogout, useProfile } from "@/lib/hook";
 
 function Navbar() {
     const navigate = useNavigate(); // ✅ ใช้ useNavigate() เพื่อเปลี่ยนหน้า
+    const { data: profile } = useProfile();
+    const { mutate: logout } = useLogout();
     const [userMenuOpen, setUserMenuOpen] = useState(false);
 
     return (
@@ -17,7 +20,7 @@ function Navbar() {
             {/* ✅ ปุ่มอยู่ทางขวา และขนาดเท่ากัน */}
             <div className="flex items-center gap-4 ml-auto">
                 <button
-                    className="flex items-center gap-2 bg-black text-white text-lg font-semibold px-6 py-3 rounded-2xl shadow-lg hover:bg-gray-800 w-48 h-12 text-center justify-center"
+                    className="text-nowrap flex items-center gap-2 bg-black text-white text-lg font-semibold px-6 py-3 rounded-2xl shadow-lg hover:bg-gray-800 w-48 h-12 text-center justify-center"
                     onClick={() => navigate("/marketplace")} // ✅ เปลี่ยนไปหน้า Market Place
                 >
                     <FaHome className="text-white text-2xl" />
@@ -38,27 +41,34 @@ function Navbar() {
                     />
                     {userMenuOpen && (
                         <div className="absolute right-0 mt-2 w-30 bg-white text-black rounded-lg shadow-lg">
-                            <button
-                                onClick={() => navigate("/profile")}
-                                className="block px-4 py-2"
-                            >
-                                Profile
-                            </button>
-                            <button
-                                onClick={() => navigate("/login")}
-                                className="block px-4 py-2"
-                            >
-                                Login
-                            </button>
-                            <button
-                                onClick={() => navigate("/login")}
-                                className="block px-4 py-2"
-                            >
-                                Logout
-                            </button>
-                            {/* <button className="block w-full text-left px-4 py-2">
-                Log Out
-              </button> */}
+                            {profile && !('error' in profile) && (
+                                <>
+                                    <button
+                                        onClick={() => navigate("/profile")}
+                                        className="block px-4 py-2 w-full"
+                                    >
+                                        Profile
+                                    </button>
+
+                                    <button
+                                        onClick={() => {
+                                            logout();
+                                        }}
+                                        className="block px-4 py-2 w-full"
+                                    >
+                                        Logout
+                                    </button>
+                                </>
+                            )}
+
+                            {profile && ('error' in profile) && (
+                                <button
+                                    onClick={() => navigate("/login")}
+                                    className="block px-4 py-2 w-full"
+                                >
+                                    Login
+                                </button>
+                            )}
                         </div>
                     )}
                 </div>

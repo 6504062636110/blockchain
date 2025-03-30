@@ -1,22 +1,91 @@
-import { useMyBalance, useProfile } from "@/lib/hook";
+import { useMyBalance, useProfile, useUpdateProfile } from "@/lib/hook";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 export default function Profile() {
     const { data: profile } = useProfile();
+    const { mutate: updateProfile } = useUpdateProfile();
     const { data: balance } = useMyBalance();
+    const navigate = useNavigate();
+
+    const [formData, setFormData] = useState({
+        name: "",
+        surname: "",
+        phoneNumber: "",
+    });
+
+    useEffect(() => {
+        if (profile && !('error' in profile)) {
+            setFormData({
+                name: profile.name || "",
+                surname: profile.surname || "",
+                phoneNumber: profile.phoneNumber || "",
+            });
+        }
+    }, [profile]);
+
+    if (profile && 'error' in profile) {
+        navigate("/login");
+        return null;
+    }
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        updateProfile(formData);
+    };
 
     return (
         <div className="min-h-screen flex items-center justify-center ">
             <div className="bg-white p-6 rounded-xl shadow-lg text-center w-80">
-                {/* <div className="w-20 h-20 bg-black rounded-full mx-auto mb-4"></div> */}
                 <h2 className="text-lg font-bold">Username</h2>
-                <p className="text-xl">{profile?.username || "Guest"}</p>
+                <p className="text-xl font-mono">{profile?.username || "Guest"}</p>
 
-                {/* <h2 className="text-lg font-bold mt-2">Address</h2> */}
-                {/* <p className="truncate">{profile?.walletAddress || "Not provided"}</p> */}
+                <form onSubmit={handleSubmit}>
+                    <h2 className="text-lg font-bold mt-2">Name</h2>
+                    <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        className="border p-2 rounded w-full"
+                    />
+
+                    <h2 className="text-lg font-bold mt-2">Surname</h2>
+                    <input
+                        type="text"
+                        name="surname"
+                        value={formData.surname}
+                        onChange={handleChange}
+                        className="border p-2 rounded w-full"
+                    />
+
+                    <h2 className="text-lg font-bold mt-2">Phone Number</h2>
+                    <input
+                        type="text"
+                        name="phoneNumber"
+                        value={formData.phoneNumber}
+                        onChange={handleChange}
+                        className="border p-2 rounded w-full"
+                    />
+
+                    <button
+                        type="submit"
+                        className="bg-blue-500 text-white px-4 py-2 rounded mt-4"
+                    >
+                        Update Profile
+                    </button>
+                </form>
+
+                <h2 className="text-lg font-bold mt-4">Wallet Address</h2>
+                <p className="break-words font-mono text-base">{profile?.walletAddress || "N/A"}</p>
 
                 <h2 className="text-lg font-bold mt-2">Total Carbon Credits</h2>
                 <p className="text-2xl font-bold">{balance}</p>
-                {/* TODO: Add carbon credit count */}
             </div>
         </div>
     );

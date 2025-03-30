@@ -1,34 +1,40 @@
 {
-    "_format": "hh-sol-cache-2",
-    "files": {
-        "D:\\tk-hdd-backup\\Data\\Web\\blockchain\\backend\\contracts\\recycle-credit-token.sol": {
-            "lastModificationDate": 1743106479358,
-            "contentHash": "40e2e13fe99b3b4adb0b27fcd619c660",
-            "sourceName": "contracts/recycle-credit-token.sol",
-            "solcConfig": {
-                "version": "0.8.0",
-                "settings": {
-                    "optimizer": {
-                        "enabled": false,
-                        "runs": 200
-                    },
-                    "outputSelection": {
-                        "*": {
-                            "*": [
-                                "abi",
-                                "evm.bytecode",
-                                "evm.deployedBytecode",
-                                "evm.methodIdentifiers",
-                                "metadata"
-                            ],
-                            "": ["ast"]
-                        }
-                    }
-                }
-            },
-            "imports": [],
-            "versionPragmas": ["^0.8.0"],
-            "artifacts": ["CarbonCredit"]
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "D:\\tk-hdd-backup\\Data\\Web\\blockchain\\backend\\contracts\\recycle-credit-token.sol": {
+      "lastModificationDate": 1743109621392,
+      "contentHash": "62f7ed254b4c429ee71a7287a14daa1b",
+      "sourceName": "contracts/recycle-credit-token.sol",
+      "solcConfig": {
+        "version": "0.8.0",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
         }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "CarbonCredit"
+      ]
     }
+  }
 }
