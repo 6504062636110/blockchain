@@ -6,17 +6,21 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "../components/ui/dialog";
-import { Product, useMyBalance, useProducts } from "@/lib/hook";
+import { Product, useCheckout, useMyBalance, useProducts } from "@/lib/hook";
 import { PlusCircle, MinusCircle, ShoppingCart } from "lucide-react";
 
 export default function Marketplace() {
     const { data: prods } = useProducts();
     const { data: balance } = useMyBalance();
+    const { mutate: checkoutMutate } = useCheckout();
 
     const [selectedProduct, setSelectedProduct] = useState<Product>();
     const [quantity, setQuantity] = useState<number>(1);
-    const [availableCarbonCredits, setAvailableCarbonCredits] = useState<number>(balance || 0);
-    const [cart, setCart] = useState<Array<{ product: Product, quantity: number }>>([]);
+    const [availableCarbonCredits, setAvailableCarbonCredits] =
+        useState<number>(balance || 0);
+    const [cart, setCart] = useState<
+        Array<{ product: Product; quantity: number }>
+    >([]);
     const [showCart, setShowCart] = useState<boolean>(false);
 
     const handleSelectProduct = (product: Product) => {
@@ -29,7 +33,7 @@ export default function Marketplace() {
 
         // Check if product already exists in cart
         const existingProductIndex = cart.findIndex(
-            item => item.product.Product_ID === selectedProduct.Product_ID
+            (item) => item.product.Product_ID === selectedProduct.Product_ID,
         );
 
         if (existingProductIndex >= 0) {
@@ -75,25 +79,44 @@ export default function Marketplace() {
             const orderPayload = {
                 totalCredits: cartTotalCredits,
                 customerBalance: availableCarbonCredits,
-                items: cart.map(item => ({
+                items: cart.map((item) => ({
                     productId: item.product.Product_ID,
                     productName: item.product.ProductName,
                     quantity: item.quantity,
                     creditCost: item.product.CreditPerUnit,
-                    subtotal: item.product.CreditPerUnit * item.quantity
+                    subtotal: item.product.CreditPerUnit * item.quantity,
                 })),
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
             };
 
             // Log order payload for API
-            console.log('Order payload for API submission:', orderPayload);
+            console.log("Order payload for API submission:", orderPayload);
+            checkoutMutate(
+                {
+                    products: orderPayload.items,
+                },
+                {
+                    onSuccess: (data) => {
+                        console.log("Order submitted successfully!", data);
+                    },
+                    onError: (error) => {
+                        console.error("Error submitting order:", error);
+                    },
+                },
+            );
 
             // Reset cart and close modal
             setCart([]);
             setShowCart(false);
             alert("Order submitted successfully!");
         } else {
-            alert("Not enough carbon credits. You need " + cartTotalCredits + " credits but have " + availableCarbonCredits + ".");
+            alert(
+                "Not enough carbon credits. You need " +
+                    cartTotalCredits +
+                    " credits but have " +
+                    availableCarbonCredits +
+                    ".",
+            );
         }
     };
 
@@ -111,7 +134,11 @@ export default function Marketplace() {
                     className="bg-blue-600 hover:bg-blue-700 flex items-center gap-2"
                 >
                     <ShoppingCart size={18} />
-                    <span>Cart ({cart.reduce((total, item) => total + item.quantity, 0)})</span>
+                    <span>
+                        Cart (
+                        {cart.reduce((total, item) => total + item.quantity, 0)}
+                        )
+                    </span>
                 </Button>
             </div>
 
@@ -127,9 +154,7 @@ export default function Marketplace() {
                                 <h2 className="text-xl font-bold">
                                     {product.ProductName}
                                 </h2>
-                                <p className="text-gray-500 text-sm">
-                                    Cost
-                                </p>
+                                <p className="text-gray-500 text-sm">Cost</p>
                                 <p className="text-lg font-bold">
                                     {product.CreditPerUnit} Carbon Credits
                                 </p>
@@ -158,26 +183,36 @@ export default function Marketplace() {
                                                 variant="outline"
                                                 size="sm"
                                                 className="p-1 h-8 w-8"
-                                                onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                                                onClick={() =>
+                                                    setQuantity(
+                                                        Math.max(
+                                                            1,
+                                                            quantity - 1,
+                                                        ),
+                                                    )
+                                                }
                                             >
                                                 <MinusCircle size={16} />
                                             </Button>
-                                            <span className="w-8 text-center">{quantity}</span>
+                                            <span className="w-8 text-center">
+                                                {quantity}
+                                            </span>
                                             <Button
                                                 variant="outline"
                                                 size="sm"
                                                 className="p-1 h-8 w-8"
-                                                onClick={() => setQuantity(quantity + 1)}
+                                                onClick={() =>
+                                                    setQuantity(quantity + 1)
+                                                }
                                             >
                                                 <PlusCircle size={16} />
                                             </Button>
                                         </div>
                                     </div>
                                     <p>
-                                        <span className="font-bold">
-                                            Cost:
-                                        </span>{" "}
-                                        {selectedProduct.CreditPerUnit} Carbon Credits
+                                        <span className="font-bold">Cost:</span>{" "}
+                                        {selectedProduct.CreditPerUnit} Carbon
+                                        Credits
                                     </p>
                                 </div>
 
@@ -192,7 +227,8 @@ export default function Marketplace() {
                                 {/* Available Credits */}
                                 <div className="mt-2 text-sm">
                                     <span className="font-medium text-green-700">
-                                        Your Available Credits: {availableCarbonCredits}
+                                        Your Available Credits:{" "}
+                                        {availableCarbonCredits}
                                     </span>
                                 </div>
 
@@ -219,17 +255,28 @@ export default function Marketplace() {
             {/* Shopping Cart Modal */}
             <Dialog open={showCart} onOpenChange={setShowCart}>
                 <DialogContent className="p-6 max-w-2xl">
-                    <DialogTitle className="text-xl font-bold">Shopping Cart</DialogTitle>
+                    <DialogTitle className="text-xl font-bold">
+                        Shopping Cart
+                    </DialogTitle>
 
                     {cart.length > 0 ? (
                         <div className="mt-4">
                             {/* Cart Items */}
                             <div className="max-h-96 overflow-y-auto">
                                 {cart.map((item, index) => (
-                                    <div key={index} className="border-b py-3 flex justify-between items-center">
+                                    <div
+                                        key={index}
+                                        className="border-b py-3 flex justify-between items-center"
+                                    >
                                         <div className="flex-1">
-                                            <p className="font-bold">{item.product.ProductName}</p>
-                                            <p className="text-sm">Cost: {item.product.CreditPerUnit} Carbon Credits</p>
+                                            <p className="font-bold">
+                                                {item.product.ProductName}
+                                            </p>
+                                            <p className="text-sm">
+                                                Cost:{" "}
+                                                {item.product.CreditPerUnit}{" "}
+                                                Carbon Credits
+                                            </p>
                                         </div>
 
                                         {/* Quantity Controls */}
@@ -238,16 +285,28 @@ export default function Marketplace() {
                                                 variant="outline"
                                                 size="sm"
                                                 className="p-1 h-8 w-8"
-                                                onClick={() => updateCartItemQuantity(index, item.quantity - 1)}
+                                                onClick={() =>
+                                                    updateCartItemQuantity(
+                                                        index,
+                                                        item.quantity - 1,
+                                                    )
+                                                }
                                             >
                                                 <MinusCircle size={16} />
                                             </Button>
-                                            <span className="w-8 text-center">{item.quantity}</span>
+                                            <span className="w-8 text-center">
+                                                {item.quantity}
+                                            </span>
                                             <Button
                                                 variant="outline"
                                                 size="sm"
                                                 className="p-1 h-8 w-8"
-                                                onClick={() => updateCartItemQuantity(index, item.quantity + 1)}
+                                                onClick={() =>
+                                                    updateCartItemQuantity(
+                                                        index,
+                                                        item.quantity + 1,
+                                                    )
+                                                }
                                             >
                                                 <PlusCircle size={16} />
                                             </Button>
@@ -255,12 +314,20 @@ export default function Marketplace() {
 
                                         {/* Total & Remove */}
                                         <div className="ml-4 flex flex-col items-end">
-                                            <p className="font-bold">{calculateItemCreditCost(item.product, item.quantity)} Credits</p>
+                                            <p className="font-bold">
+                                                {calculateItemCreditCost(
+                                                    item.product,
+                                                    item.quantity,
+                                                )}{" "}
+                                                Credits
+                                            </p>
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
                                                 className="text-red-500 p-0 h-6 mt-1"
-                                                onClick={() => removeFromCart(index)}
+                                                onClick={() =>
+                                                    removeFromCart(index)
+                                                }
                                             >
                                                 Remove
                                             </Button>
@@ -272,18 +339,29 @@ export default function Marketplace() {
                             {/* Cart Total */}
                             <div className="mt-4 pt-3 border-t">
                                 <div className="flex justify-between items-center mb-2">
-                                    <span className="text-lg font-bold">Total Carbon Credits:</span>
-                                    <span className="text-lg font-bold">{cartTotalCredits}</span>
+                                    <span className="text-lg font-bold">
+                                        Total Carbon Credits:
+                                    </span>
+                                    <span className="text-lg font-bold">
+                                        {cartTotalCredits}
+                                    </span>
                                 </div>
                                 <div className="flex justify-between items-center text-sm">
-                                    <span className="font-medium">Your Available Credits:</span>
-                                    <span className={`font-medium ${availableCarbonCredits >= cartTotalCredits ? 'text-green-600' : 'text-red-600'}`}>
+                                    <span className="font-medium">
+                                        Your Available Credits:
+                                    </span>
+                                    <span
+                                        className={`font-medium ${availableCarbonCredits >= cartTotalCredits ? "text-green-600" : "text-red-600"}`}
+                                    >
                                         {availableCarbonCredits}
                                     </span>
                                 </div>
                                 {availableCarbonCredits < cartTotalCredits && (
                                     <p className="text-red-500 text-sm mt-1">
-                                        You need {cartTotalCredits - availableCarbonCredits} more credits to complete this purchase.
+                                        You need{" "}
+                                        {cartTotalCredits -
+                                            availableCarbonCredits}{" "}
+                                        more credits to complete this purchase.
                                     </p>
                                 )}
                             </div>
@@ -298,7 +376,10 @@ export default function Marketplace() {
                                 </Button>
                                 <Button
                                     className="bg-green-600 hover:bg-green-700"
-                                    disabled={availableCarbonCredits < cartTotalCredits}
+                                    disabled={
+                                        availableCarbonCredits <
+                                        cartTotalCredits
+                                    }
                                     onClick={checkout}
                                 >
                                     Purchase with Carbon Credits
@@ -307,7 +388,9 @@ export default function Marketplace() {
                         </div>
                     ) : (
                         <div className="py-8 text-center">
-                            <p className="text-gray-500 mb-4">Your cart is empty</p>
+                            <p className="text-gray-500 mb-4">
+                                Your cart is empty
+                            </p>
                             <Button
                                 variant="outline"
                                 onClick={() => setShowCart(false)}

@@ -161,3 +161,28 @@ export const useMyBalance = () => {
         },
     });
 };
+
+export const useCheckout = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (data: {
+            products: {
+                productId: number;
+                quantity: number;
+            }[];
+        }) => {
+            const response = await fetch(`${backendUrl}/order`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                credentials: "include",
+                body: JSON.stringify(data),
+            });
+            return response.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["balance"] });
+        },
+    });
+};

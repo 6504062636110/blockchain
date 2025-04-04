@@ -257,7 +257,101 @@ app.post('/order', async (req, res) => {
     if (!walletAddress) {
         return res.status(400).json({ error: "User has no wallet address" });
     }
-})
+
+    const { products } = req.body;
+    if (!Array.isArray(products) || products.length === 0) {
+        return res.status(400).json({ error: "Products are required" });
+    }
+
+    const orderDate = new Date();
+
+    connection.beginTransaction(async (err) => {
+        if (err) {
+            return res.status(500).json({ error: "Transaction error" });
+        }
+
+        try {
+            // Insert into orders table
+            const orderResult = await new Promise((resolve, reject) => {
+                connection.query(
+                    `
+                    INSERT INTO \`orders\` (\`Cus_ID\`, \`OrderDate\`)
+                    VALUES (?, ?)
+                    `,
+                    [user.cusId, orderDate],
+                    (error, results) => {
+                        if (error) return reject(error);
+                        resolve(results);
+                    }
+                );
+            });
+
+            const orderId = orderResult.insertId;
+
+            // Insert into orderdetail table
+            for (const product of products) {
+                const { productId, quantity } = product;
+
+                if (!productId || !quantity || isNaN(quantity)) {
+                    throw new Error("Invalid product data");
+                }
+
+                const productResult = await new Promise((resolve, reject) => {
+                    connection.query(
+                        `
+                        SELECT \`CreditPerUnit\` FROM \`product\` WHERE \`Product_ID\` = ?
+                        `,
+                        [productId],
+                        (error, results) => {
+                            if (error) return reject(error);
+                            if (results.length === 0) {
+                                return reject(new Error("Product not found"));
+                            }
+                            resolve(results[0]);
+                        }
+                    );
+                });
+
+                const usedCredit = productResult.CreditPerUnit * quantity; // Calculate earned credit based on product price
+
+                await new Promise((resolve, reject) => {
+                    connection.query(
+                        `
+                        INSERT INTO \`orderdetail\` (\`Order_ID\`, \`Product_ID\`, \`Quantity\`, \`EarnedCredit\`)
+                        VALUES (?, ?, ?, ?)
+                        `,
+                        [orderId, productId, quantity, usedCredit],
+                        (error, results) => {
+                            if (error) return reject(error);
+                            resolve(results);
+                        }
+                    );
+                });
+
+                // Update user's wallet balance in the smart contract
+                try {
+                    const tx = await contract.burn(walletAddress, usedCredit);
+                    await tx.wait();
+                } catch (error) {
+                    throw new Error("Failed to update wallet balance on blockchain");
+                }
+            }
+
+            connection.commit((err) => {
+                if (err) {
+                    return connection.rollback(() => {
+                        res.status(500).json({ error: "Transaction commit error" });
+                    });
+                }
+                res.status(200).json({ message: "Order placed successfully", orderId });
+            });
+        } catch (error) {
+            connection.rollback(() => {
+                res.status(500).json({ error: error.message });
+            });
+        }
+    });
+});
 
 app.post("/recycle", async (req, res) => {
     const user = req.session.user;
