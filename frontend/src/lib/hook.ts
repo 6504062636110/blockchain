@@ -19,6 +19,30 @@ export const useProducts = () => {
     });
 };
 
+export const useRegister = () => {
+    return useMutation({
+        mutationFn: async (data: {
+            name: string;
+            surname: string;
+            phone: string;
+            username: string;
+            password: string;
+        }) => {
+            const response = await fetch(`${backendUrl}/register`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            });
+            if (!response.ok) {
+                throw new Error("Registration failed");
+            }
+            return response.text();
+        },
+    });
+};
+
 export const useLogin = () => {
     const queryClient = useQueryClient();
     return useMutation({
