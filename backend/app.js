@@ -163,7 +163,14 @@ app.post("/register", async (req, res) => {
             "",
         ],
         function (error, results, fields) {
-            req.session.user = { cusId: results.insertId };
+            req.session.user = {
+                cusId: results.insertId,
+                username: req.body.username,
+                name: req.body.name,
+                surname: req.body.surname,
+                phoneNumber: req.body.phone,
+                walletAddress: '',
+            };
             res.send("Account Registration Completed!");
         },
     );

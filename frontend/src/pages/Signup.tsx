@@ -1,23 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useRegister } from "@/lib/hook";
+import { useToast } from "@/hooks/use-toast";
 
 const SignUp = () => {
-    const backendUrl = import.meta.env.VITE_API;
-
-    const [form, setForm] = useState({
-        name: "",
-        surname: "",
-        phone: "",
-        username: "",
-        password: "",
-    });
-    const [error, setError] = useState("");
-    const navigate = useNavigate();
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-    };
+    const { mutate: register, isPending } = useRegister();
+    const { toast } = useToast();
 
     const handleConfirm = async () => {
         if (
@@ -30,18 +19,33 @@ const SignUp = () => {
             setError("All fields are required!");
         } else {
             setError("");
-            // ✅ Save user data to Local Storage
 
-            await fetch(`http://localhost:3000/register`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(form),
+            register(form, {
+                onSuccess: (data) => {
+                    console.log(data);
+                    toast({
+                        title: "Registration successful!",
+                    });
+                    navigate("/marketplace");
+                },
+                onError: (error: any) => {
+                    setError(error?.message || "Registration failed!");
+                },
             });
-
-            const userData = { ...form, totalCredit: 0 };
-            localStorage.setItem("user", JSON.stringify(userData));
-            navigate("/login");
         }
+    };
+    const [form, setForm] = useState({
+        name: "",
+        surname: "",
+        phone: "",
+        username: "",
+        password: "",
+    });
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setForm({ ...form, [e.target.name]: e.target.value });
     };
 
     return (
@@ -99,6 +103,7 @@ const SignUp = () => {
 
                 {/* Confirm Button */}
                 <Button
+                    disabled={isPending}
                     className="w-full bg-orange-400 text-white py-3 mt-6 text-xl font-semibold rounded-md hover:bg-orange-500 transition"
                     onClick={handleConfirm}
                 >
